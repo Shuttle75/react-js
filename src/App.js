@@ -1,4 +1,5 @@
 import React from 'react';
+import Axios from 'axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -30,19 +31,20 @@ class SimpleTable extends React.Component {
             items: [],
             count: 0
         };
-
     }
+
+    jsonParams = {page: 0,
+        size: 10,
+        sort: null
+    };
 
     componentDidMount() {
-        this.getREST(this.state.page, this.state.size, this.state.orderBy, this.state.orderDir);
+        this.getREST(this.jsonParams);
     }
 
-    getREST(page , size, orderBy, orderDir) {
-        fetch("http://localhost:5000/api/bills?"
-            + "page=" + page
-            + "&size=" + size
-            + "&sort=" + orderBy + "," + orderDir)
-            .then(res => res.json())
+    getREST(params) {
+        Axios.get("http://localhost:5000/api/bills", {params})
+            .then(res => res.data)
             .then(
                 (result) => {
                     this.setState({
@@ -59,18 +61,21 @@ class SimpleTable extends React.Component {
             orderDir = 'desc';
         }
         this.setState({orderBy: orderBy, orderDir: orderDir});
-        this.getREST(this.state.page, this.state.size, orderBy, orderDir);
+        this.jsonParams.sort = orderBy + ',' + orderDir;
+        this.getREST(this.jsonParams);
     };
 
     handleChangePage = (event: unknown, page: number) => {
         this.setState({page: page});
-        this.getREST(page, this.state.size, this.state.orderBy, this.state.orderDir);
+        this.jsonParams.page = page;
+        this.getREST(this.jsonParams);
     };
 
     handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         let size = parseInt(event.target.value, 10);
         this.setState({page: 0, size: size});
-        this.getREST(this.state.page, size, this.state.orderBy, this.state.orderDir);
+        this.jsonParams.size = size;
+        this.getREST(this.jsonParams);
     };
 
     render() {
