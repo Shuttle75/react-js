@@ -10,14 +10,6 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TablePagination from '@material-ui/core/TablePagination';
 import Paper from '@material-ui/core/Paper';
 
-// interface Bill {
-//     openDate: string,
-//     closeDate: string,
-//     persons: number,
-//     discountPercent: number,
-//     discountAmount: number
-// }
-
 class SimpleTable extends React.Component {
 
     constructor(props) {
@@ -28,12 +20,15 @@ class SimpleTable extends React.Component {
             size: 10,
             orderDir: 'asc',
             orderBy: 'closeDate',
+            columns: ['waiter', 'openDate', 'closeDate', 'persons', 'billAmount'],
             items: [],
             count: 0
         };
+
     }
 
-    jsonParams = {page: 0,
+    jsonParams = {
+        page: 0,
         size: 10,
         sort: null
     };
@@ -79,80 +74,34 @@ class SimpleTable extends React.Component {
     };
 
     render() {
-
-        const {page, size, orderBy, orderDir, items, count} = this.state;
+        const {page, size, orderBy, orderDir, columns, items, count} = this.state;
         return (
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell
-                                key='openDate'
-                                sortDirection={orderBy === 'openDate' ? orderDir : false}>
-                                <TableSortLabel
-                                    key='openDate'
-                                    active={orderBy === 'openDate'}
-                                    direction={orderBy === 'openDate' ? orderDir : "asc"}
-                                    onClick={() => {this.createSortHandler('openDate')}}>
-                                    openDate
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell
-                                key='closeDate'
-                                align="right"
-                                sortDirection={orderBy === 'closeDate' ? orderDir : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'closeDate'}
-                                    direction={orderBy === 'closeDate' ? orderDir : "asc"}
-                                    onClick={() => {this.createSortHandler('closeDate')}}>
-                                    closeDate
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell
-                                key='persons'
-                                align="right"
-                                sortDirection={orderBy === 'persons' ? orderDir : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'persons'}
-                                    direction={orderBy === 'persons' ? orderDir : "asc"}
-                                    onClick={() => {this.createSortHandler('persons')}}>
-                                    persons
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell
-                                key='discountPercent'
-                                align="right"
-                                sortDirection={orderBy === 'discountPercent' ? orderDir : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'discountPercent'}
-                                    direction={orderBy === 'discountPercent' ? orderDir : "asc"}
-                                    onClick={() => {this.createSortHandler('discountPercent')}}>
-                                    discountPercent
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell
-                                key='discountAmount'
-                                align="right"
-                                sortDirection={orderBy === 'discountAmount' ? orderDir : false}>
-                                <TableSortLabel
-                                    active={orderBy === 'discountAmount'}
-                                    direction={orderBy === 'discountAmount' ? orderDir : "asc"}
-                                    onClick={() => {this.createSortHandler('discountAmount')}}>
-                                    discountAmount
-                                </TableSortLabel>
-                            </TableCell>
+                            {columns.map(column => (
+                                <TableCell
+                                    key={column}
+                                    sortDirection={orderBy === column ? orderDir : false}>
+                                    <TableSortLabel
+                                        active={orderBy === column}
+                                        direction={orderBy === column ? orderDir : "asc"}
+                                        onClick={() => {this.createSortHandler(column)}}>
+                                        {column}
+                                    </TableSortLabel>
+                                </TableCell>
+                            ))}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {items.map(row => (
                             <TableRow key={row.id}>
-                                <TableCell component="th" scope="row">
-                                    {row.openDate}
-                                </TableCell>
-                                <TableCell align="right">{row.closeDate}</TableCell>
-                                <TableCell align="right">{row.persons}</TableCell>
-                                <TableCell align="right">{row.discountPercent}</TableCell>
-                                <TableCell align="right">{row.discountAmount}</TableCell>
+                                <TableCell>{row.waiter.firstName + ' ' + row.waiter.lastName}</TableCell>
+                                <TableCell>{row.openDate}</TableCell>
+                                <TableCell>{row.closeDate}</TableCell>
+                                <TableCell>{row.persons}</TableCell>
+                                <TableCell>{row.billAmount}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
